@@ -3,8 +3,13 @@ package com.taskapp.backend.service;
 import com.taskapp.backend.dto.TaskRequestDto;
 import com.taskapp.backend.dto.TaskResponseDto;
 import com.taskapp.backend.entity.Task;
+import com.taskapp.backend.enums.TaskStatus;
 import com.taskapp.backend.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -33,13 +38,28 @@ public class TaskService {
         return mapToResponseDto(savedTask);
     }
 
-    public List<TaskResponseDto> getAllTasks() {
+    public Page<TaskResponseDto> getAllTasks(
+            int page,
+            int size,
+            TaskStatus status,
+            String sortBy
+    ) {
 
-        List<Task> tasks = taskRepository.findAll();
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(sortBy).descending()
+        );
 
-        return tasks.stream()
-                .map(this::mapToResponseDto)
-                .toList();
+        Page<Task> taskPage;
+
+        if (status != null) {
+            taskPage = taskRepository.findByStatus(status, pageable);
+        } else {
+            taskPage = taskRepository.findAll(pageable);
+        }
+
+        return taskPage.map(this::mapToResponseDto);
     }
 
     public TaskResponseDto getTaskById(Long id) {

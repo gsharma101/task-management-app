@@ -2,9 +2,11 @@ package com.taskapp.backend.controller;
 
 import com.taskapp.backend.dto.TaskRequestDto;
 import com.taskapp.backend.dto.TaskResponseDto;
+import com.taskapp.backend.enums.TaskStatus;
 import com.taskapp.backend.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,8 +26,23 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<TaskResponseDto> getAllTasks() {
-        return taskService.getAllTasks();
+    public Page<TaskResponseDto> getAllTasks(
+
+            @RequestParam(defaultValue = "0") int page,
+
+            @RequestParam(defaultValue = "5") int size,
+
+            @RequestParam(required = false) TaskStatus status,
+
+            @RequestParam(defaultValue = "createdAt") String sortBy
+    ) {
+
+        return taskService.getAllTasks(
+                page,
+                size,
+                status,
+                sortBy
+        );
     }
 
     @GetMapping("/{id}")
