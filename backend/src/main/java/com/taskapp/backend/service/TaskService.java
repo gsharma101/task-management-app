@@ -42,6 +42,39 @@ public class TaskService {
                 .toList();
     }
 
+    public TaskResponseDto getTaskById(Long id) {
+
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        return mapToResponseDto(task);
+    }
+
+    public void deleteTask(Long id) {
+
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        taskRepository.delete(task);
+    }
+
+    public TaskResponseDto updateTask(Long id, TaskRequestDto requestDto) {
+
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        task.setTitle(requestDto.getTitle());
+        task.setDescription(requestDto.getDescription());
+        task.setStatus(requestDto.getStatus());
+        task.setPriority(requestDto.getPriority());
+        task.setDueDate(requestDto.getDueDate());
+        task.setUpdatedAt(LocalDateTime.now());
+
+        Task updatedTask = taskRepository.save(task);
+
+        return mapToResponseDto(updatedTask);
+    }
+
     private TaskResponseDto mapToResponseDto(Task task) {
 
         return TaskResponseDto.builder()
