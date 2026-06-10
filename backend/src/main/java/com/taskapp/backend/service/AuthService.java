@@ -6,6 +6,7 @@ import com.taskapp.backend.dto.SignupRequestDto;
 import com.taskapp.backend.entity.User;
 import com.taskapp.backend.enums.Role;
 import com.taskapp.backend.repository.UserRepository;
+import com.taskapp.backend.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,8 @@ public class AuthService {
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final JwtService jwtService;
 
     public AuthResponseDto signup(SignupRequestDto requestDto) {
 
@@ -55,7 +58,10 @@ public class AuthService {
             throw new RuntimeException("Invalid email or password");
         }
 
+        String token = jwtService.generateToken(user.getEmail());
+
         return AuthResponseDto.builder()
+                .token(token)
                 .message("Login successful")
                 .build();
     }
