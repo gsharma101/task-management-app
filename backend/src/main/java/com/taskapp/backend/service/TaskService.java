@@ -42,7 +42,8 @@ public class TaskService {
             int page,
             int size,
             TaskStatus status,
-            String sortBy
+            String sortBy,
+            String search
     ) {
 
         Pageable pageable = PageRequest.of(
@@ -53,9 +54,18 @@ public class TaskService {
 
         Page<Task> taskPage;
 
-        if (status != null) {
-            taskPage = taskRepository.findByStatus(status, pageable);
+        if (search != null && !search.isEmpty()) {
+
+            taskPage = taskRepository
+                    .findByTitleContainingIgnoreCase(search, pageable);
+
+        } else if (status != null) {
+
+            taskPage = taskRepository
+                    .findByStatus(status, pageable);
+
         } else {
+
             taskPage = taskRepository.findAll(pageable);
         }
 

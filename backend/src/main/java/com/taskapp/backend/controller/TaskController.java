@@ -34,14 +34,17 @@ public class TaskController {
 
             @RequestParam(required = false) TaskStatus status,
 
-            @RequestParam(defaultValue = "createdAt") String sortBy
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+
+            @RequestParam(required = false) String search
     ) {
 
         return taskService.getAllTasks(
                 page,
                 size,
                 status,
-                sortBy
+                sortBy,
+                search
         );
     }
 
