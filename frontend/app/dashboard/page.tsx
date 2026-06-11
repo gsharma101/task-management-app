@@ -151,7 +151,7 @@ export default function DashboardPage() {
           Previous
         </button>
 
-        <span className="font-semibold text-black">
+        <span className="text-black dark:text-white">
           Page {page + 1} of {totalPages}
         </span>
 
