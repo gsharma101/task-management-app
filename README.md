@@ -13,7 +13,7 @@ https://task-management-app-wine-delta.vercel.app
 
 ## Backend
 
-https://your-railway-backend-url.up.railway.app
+task-management-app-production-a07b.up.railway.app
 
 ---
 
@@ -135,11 +135,7 @@ DELETE /tasks/{id}
 ## Backend (.env or Railway Variables)
 
 ```env
-JWT_SECRET=your_secret_key
-
-SPRING_DATASOURCE_URL=your_database_url
-SPRING_DATASOURCE_USERNAME=postgres
-SPRING_DATASOURCE_PASSWORD=password
+ALLOWED_ORIGINS="your_frontend_url" PGDATABASE="your_database_name" PGHOST="your_database_host" PGPASSWORD="your_database_password" PGPORT="your_database_port" PGUSER="your_database_username" SPRING_PROFILES_ACTIVE="prod" JWT_SECRET="your_jwt_secret"
 ```
 
 ## Frontend (.env.local)
