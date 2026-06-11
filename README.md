@@ -86,57 +86,121 @@ task-management-app-production-a07b.up.railway.app
 * Confirmation Dialog for Delete
 * Mobile-Friendly UI
 
----
-
 # API Endpoints
 
-## Authentication
+## Authentication APIs
 
-### Signup
-
-POST /auth/signup
-
-### Login
-
-POST /auth/login
-
-### Current User
-
-GET /auth/me
+| Method | Endpoint       | Description                            |
+| ------ | -------------- | -------------------------------------- |
+| POST   | `/auth/signup` | Register a new user                    |
+| POST   | `/auth/login`  | Authenticate user and return JWT token |
+| GET    | `/auth/me`     | Fetch currently logged-in user         |
 
 ---
 
-## Tasks
+## Task APIs
 
-### Create Task
-
-POST /tasks
-
-### Get All Tasks
-
-GET /tasks?page=0&size=6&search=&sortBy=createdAt
-
-### Get Single Task
-
-GET /tasks/{id}
-
-### Update Task
-
-PATCH /tasks/{id}
-
-### Delete Task
-
-DELETE /tasks/{id}
+| Method | Endpoint      | Description             |
+| ------ | ------------- | ----------------------- |
+| POST   | `/tasks`      | Create a new task       |
+| GET    | `/tasks`      | Fetch paginated tasks   |
+| GET    | `/tasks/{id}` | Fetch a task by ID      |
+| PATCH  | `/tasks/{id}` | Update an existing task |
+| DELETE | `/tasks/{id}` | Delete a task           |
 
 ---
+
+## Example Query Parameters
+
+### Pagination
+
+```http
+GET /tasks?page=0&size=6
+```
+
+### Search
+
+```http
+GET /tasks?search=spring
+```
+
+### Sorting
+
+```http
+GET /tasks?sortBy=createdAt
+```
+
+Supported sorting fields:
+
+* `createdAt`
+* `dueDate`
+* `priority`
+
+---
+
+## Authentication Header
+
+Protected APIs require JWT token in request headers:
+
+```http
+Authorization: Bearer your_jwt_token
+```
 
 # Environment Variables
 
-## Backend (.env or Railway Variables)
+## Backend Environment Variables
 
 ```env
-ALLOWED_ORIGINS="your_frontend_url" PGDATABASE="your_database_name" PGHOST="your_database_host" PGPASSWORD="your_database_password" PGPORT="your_database_port" PGUSER="your_database_username" SPRING_PROFILES_ACTIVE="prod" JWT_SECRET="your_jwt_secret"
+ALLOWED_ORIGINS="your_frontend_url"
+
+PGDATABASE="your_database_name"
+PGHOST="your_database_host"
+PGPASSWORD="your_database_password"
+PGPORT="your_database_port"
+PGUSER="your_database_username"
+
+SPRING_PROFILES_ACTIVE="prod"
+
+JWT_SECRET="your_jwt_secret"
 ```
+
+---
+
+# Spring Profiles
+
+The backend uses separate Spring profiles for development and production environments.
+
+### Development Profile
+
+Used for local development configuration.
+
+```properties
+spring.profiles.active=dev
+```
+
+### Production Profile
+
+Used for deployed production configuration on Railway.
+
+```properties
+spring.profiles.active=prod
+```
+
+Separate profile files:
+
+```txt
+application-dev.properties
+application-prod.properties
+```
+
+This helps maintain different:
+
+* database configurations
+* CORS origins
+* environment variables
+* deployment settings
+  for local and production environments.
+
 
 ## Frontend (.env.local)
 
@@ -148,15 +212,41 @@ NEXT_PUBLIC_API_URL=http://localhost:5454
 
 # Local Setup
 
+## Local PostgreSQL Setup
+
+Install PostgreSQL locally and create a database for the application.
+
+Example database:
+
+```sql
+CREATE DATABASE task_management;
+```
+
+Update your local `application-dev.properties` file:
+
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/task_management
+spring.datasource.username=your_postgres_username
+spring.datasource.password=your_postgres_password
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+```
+
+Make sure PostgreSQL is running locally before starting the backend server.
+
+The backend uses the `dev` Spring profile during local development.
+
+
 ## Clone Repository
 
 ```bash
-git clone https://github.com/your-username/task-management-app.git
+git clone https://github.com/gsharma101/task-management-app
 ```
 
 ---
 
-# Backend Setup
+## Backend Setup
 
 ```bash
 cd backend
@@ -176,7 +266,7 @@ http://localhost:5454
 
 ---
 
-# Frontend Setup
+## Frontend Setup
 
 ```bash
 cd frontend
