@@ -68,7 +68,11 @@ public class TaskService {
         if (search != null && !search.isEmpty()) {
 
             taskPage = taskRepository
-                    .findByTitleContainingIgnoreCase(search, pageable);
+                    .findByUserAndTitleContainingIgnoreCase(
+                            currentUser,
+                            search,
+                            pageable
+                    );
 
         } else if (status != null) {
 

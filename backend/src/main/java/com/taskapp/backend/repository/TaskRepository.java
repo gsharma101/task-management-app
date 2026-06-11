@@ -20,4 +20,10 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             String title,
             Pageable pageable
     );
+
+    Page<Task> findByUserAndTitleContainingIgnoreCase(
+            User user,
+            String title,
+            Pageable pageable
+    );
 }

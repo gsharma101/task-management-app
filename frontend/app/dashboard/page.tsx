@@ -19,7 +19,6 @@ type Task = {
 };
 
 export default function DashboardPage() {
-
   const router = useRouter();
 
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -30,41 +29,33 @@ export default function DashboardPage() {
 
   const [userName, setUserName] = useState("");
 
-  const [editingTask, setEditingTask] =
-    useState<Task | null>(null);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
+
+  const [sortBy, setSortBy] = useState("createdAt");
 
   const fetchCurrentUser = async () => {
-
     try {
-
       const response = await api.get("/auth/me");
 
       setUserName(response.data.name);
-
     } catch (error) {
-
       console.log(error);
     }
   };
 
   const fetchTasks = async () => {
-
     try {
-
       const response = await api.get(
-        `/tasks?page=0&size=10&search=${search}`
+        `/tasks?page=0&size=10&search=${search}&sortBy=${sortBy}`,
       );
 
       setTasks(response.data.content);
-
     } catch (error) {
-
       console.error(error);
     }
   };
 
   useEffect(() => {
-
     if (typeof window === "undefined") {
       return;
     }
@@ -72,7 +63,6 @@ export default function DashboardPage() {
     const token = localStorage.getItem("token");
 
     if (!token) {
-
       router.push("/login");
 
       return;
@@ -81,49 +71,40 @@ export default function DashboardPage() {
     fetchTasks();
 
     fetchCurrentUser();
-
   }, [router]);
 
   useEffect(() => {
-
     if (typeof window === "undefined") {
       return;
     }
 
     fetchTasks();
-
-  }, [search]);
+  }, [search, sortBy]);
 
   const handleDeleteTask = async (id: number) => {
-
     try {
-
       await api.delete(`/tasks/${id}`);
 
       fetchTasks();
-
     } catch (error) {
-
       console.log(error);
     }
   };
 
   const handleEditTask = (task: Task) => {
-
     setEditingTask(task);
 
     setIsModalOpen(true);
   };
 
   return (
-
     <div className="min-h-screen bg-gray-100 p-6">
-
       <Navbar
         search={search}
         setSearch={setSearch}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
         onCreateTaskClick={() => {
-
           setEditingTask(null);
 
           setIsModalOpen(true);
@@ -140,7 +121,6 @@ export default function DashboardPage() {
       <CreateTaskModal
         isOpen={isModalOpen}
         onClose={() => {
-
           setIsModalOpen(false);
 
           setEditingTask(null);
@@ -148,7 +128,6 @@ export default function DashboardPage() {
         onTaskCreated={fetchTasks}
         editingTask={editingTask}
       />
-
     </div>
   );
 }
