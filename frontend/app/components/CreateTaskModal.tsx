@@ -38,17 +38,15 @@ export default function CreateTaskModal({
   onTaskCreated,
   editingTask,
 }: CreateTaskModalProps) {
-
   const {
     register,
     handleSubmit,
     reset,
+    formState: { errors },
   } = useForm<TaskFormData>();
 
   useEffect(() => {
-
     if (editingTask) {
-
       reset({
         title: editingTask.title,
         description: editingTask.description,
@@ -56,9 +54,7 @@ export default function CreateTaskModal({
         priority: editingTask.priority,
         dueDate: editingTask.dueDate,
       });
-
     } else {
-
       reset({
         title: "",
         description: "",
@@ -67,24 +63,15 @@ export default function CreateTaskModal({
         dueDate: "",
       });
     }
-
   }, [editingTask, reset]);
 
   const onSubmit = async (data: TaskFormData) => {
-
     try {
-
       if (editingTask) {
-
-        await api.patch(
-          `/tasks/${editingTask.id}`,
-          data
-        );
+        await api.patch(`/tasks/${editingTask.id}`, data);
 
         toast.success("Task updated successfully");
-
       } else {
-
         await api.post("/tasks", data);
 
         toast.success("Task created successfully");
@@ -95,13 +82,8 @@ export default function CreateTaskModal({
       onTaskCreated();
 
       onClose();
-
     } catch (error: any) {
-
-      toast.error(
-        error.response?.data?.error ||
-        "Failed to save task"
-      );
+      toast.error(error.response?.data?.error || "Failed to save task");
     }
   };
 
@@ -109,17 +91,10 @@ export default function CreateTaskModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-8">
-
         <div className="flex items-center justify-between mb-6">
-
           <h2 className="text-3xl font-bold text-black">
-
-            {editingTask
-              ? "Update Task"
-              : "Create Task"}
-
+            {editingTask ? "Update Task" : "Create Task"}
           </h2>
 
           <button
@@ -128,29 +103,35 @@ export default function CreateTaskModal({
           >
             ×
           </button>
-
         </div>
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-5"
-        >
-
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <input
             type="text"
             placeholder="Task title"
-            {...register("title")}
+            {...register("title", {
+              required: "Title is required",
+            })}
             className="w-full border border-gray-300 rounded-xl p-4 text-black"
           />
 
+          {errors.title && (
+            <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
+          )}
+
           <textarea
             placeholder="Task description"
-            {...register("description")}
+            {...register("description", {
+              required: "Description is required",
+            })}
             className="w-full border border-gray-300 rounded-xl p-4 text-black h-32"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {errors.title && (
+            <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
+          )}
 
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <select
               {...register("status")}
               className="border border-gray-300 rounded-xl p-4 text-black"
@@ -174,11 +155,9 @@ export default function CreateTaskModal({
               {...register("dueDate")}
               className="border border-gray-300 rounded-xl p-4 text-black"
             />
-
           </div>
 
           <div className="flex justify-end gap-4 pt-4">
-
             <button
               type="button"
               onClick={onClose}
@@ -191,19 +170,11 @@ export default function CreateTaskModal({
               type="submit"
               className="bg-black text-white px-6 py-3 rounded-xl hover:bg-gray-800"
             >
-
-              {editingTask
-                ? "Update Task"
-                : "Create Task"}
-
+              {editingTask ? "Update Task" : "Create Task"}
             </button>
-
           </div>
-
         </form>
-
       </div>
-
     </div>
   );
 }
