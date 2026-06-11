@@ -33,6 +33,12 @@ export default function DashboardPage() {
 
   const [sortBy, setSortBy] = useState("createdAt");
 
+  const [page, setPage] = useState(0);
+
+  const [totalPages, setTotalPages] = useState(0);
+
+  const [loading, setLoading] = useState(false);
+
   const fetchCurrentUser = async () => {
     try {
       const response = await api.get("/auth/me");
@@ -45,13 +51,17 @@ export default function DashboardPage() {
 
   const fetchTasks = async () => {
     try {
+      setLoading(true);
       const response = await api.get(
-        `/tasks?page=0&size=10&search=${search}&sortBy=${sortBy}`,
+        `/tasks?page=${page}&size=6&search=${search}&sortBy=${sortBy}`,
       );
 
       setTasks(response.data.content);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,8 +88,14 @@ export default function DashboardPage() {
       return;
     }
 
+    setPage(0);
+
     fetchTasks();
   }, [search, sortBy]);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [search, sortBy, page]);
 
   const handleDeleteTask = async (id: number) => {
     try {
@@ -112,11 +128,41 @@ export default function DashboardPage() {
         userName={userName}
       />
 
-      <TaskGrid
-        tasks={tasks}
-        onDelete={handleDeleteTask}
-        onEdit={handleEditTask}
-      />
+      {loading ? (
+        <div className="flex justify-center items-center py-20">
+          <p className="text-2xl font-semibold text-gray-600">
+            Loading tasks...
+          </p>
+        </div>
+      ) : (
+        <TaskGrid
+          tasks={tasks}
+          onDelete={handleDeleteTask}
+          onEdit={handleEditTask}
+        />
+      )}
+
+      <div className="flex justify-center items-center gap-4 mt-8">
+        <button
+          onClick={() => setPage((prev) => prev - 1)}
+          disabled={page === 0}
+          className="px-4 py-2 bg-black text-white rounded disabled:bg-gray-400"
+        >
+          Previous
+        </button>
+
+        <span className="font-semibold text-black">
+          Page {page + 1} of {totalPages}
+        </span>
+
+        <button
+          onClick={() => setPage((prev) => prev + 1)}
+          disabled={page + 1 >= totalPages}
+          className="px-4 py-2 bg-black text-white rounded disabled:bg-gray-400"
+        >
+          Next
+        </button>
+      </div>
 
       <CreateTaskModal
         isOpen={isModalOpen}
