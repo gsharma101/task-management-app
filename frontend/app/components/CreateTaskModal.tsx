@@ -1,10 +1,21 @@
 "use client";
 
+import { useEffect } from "react";
+
 import { useForm } from "react-hook-form";
 
 import api from "@/services/api";
 
 import toast from "react-hot-toast";
+
+type Task = {
+  id: number;
+  title: string;
+  description: string;
+  status: string;
+  priority: string;
+  dueDate: string;
+};
 
 type TaskFormData = {
   title: string;
@@ -18,12 +29,14 @@ type CreateTaskModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onTaskCreated: () => void;
+  editingTask: Task | null;
 };
 
 export default function CreateTaskModal({
   isOpen,
   onClose,
   onTaskCreated,
+  editingTask,
 }: CreateTaskModalProps) {
 
   const {
@@ -32,13 +45,50 @@ export default function CreateTaskModal({
     reset,
   } = useForm<TaskFormData>();
 
+  useEffect(() => {
+
+    if (editingTask) {
+
+      reset({
+        title: editingTask.title,
+        description: editingTask.description,
+        status: editingTask.status,
+        priority: editingTask.priority,
+        dueDate: editingTask.dueDate,
+      });
+
+    } else {
+
+      reset({
+        title: "",
+        description: "",
+        status: "PENDING",
+        priority: "LOW",
+        dueDate: "",
+      });
+    }
+
+  }, [editingTask, reset]);
+
   const onSubmit = async (data: TaskFormData) => {
 
     try {
 
-      await api.post("/tasks", data);
+      if (editingTask) {
 
-      toast.success("Task created successfully");
+        await api.patch(
+          `/tasks/${editingTask.id}`,
+          data
+        );
+
+        toast.success("Task updated successfully");
+
+      } else {
+
+        await api.post("/tasks", data);
+
+        toast.success("Task created successfully");
+      }
 
       reset();
 
@@ -49,7 +99,8 @@ export default function CreateTaskModal({
     } catch (error: any) {
 
       toast.error(
-        error.response?.data?.error || "Failed to create task"
+        error.response?.data?.error ||
+        "Failed to save task"
       );
     }
   };
@@ -64,7 +115,11 @@ export default function CreateTaskModal({
         <div className="flex items-center justify-between mb-6">
 
           <h2 className="text-3xl font-bold text-black">
-            Create Task
+
+            {editingTask
+              ? "Update Task"
+              : "Create Task"}
+
           </h2>
 
           <button
@@ -136,7 +191,11 @@ export default function CreateTaskModal({
               type="submit"
               className="bg-black text-white px-6 py-3 rounded-xl hover:bg-gray-800"
             >
-              Create Task
+
+              {editingTask
+                ? "Update Task"
+                : "Create Task"}
+
             </button>
 
           </div>

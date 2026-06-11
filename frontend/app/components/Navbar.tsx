@@ -7,13 +7,17 @@ type NavbarProps = {
   search: string;
   setSearch: (value: string) => void;
   onCreateTaskClick: () => void;
+  userName: string;
 };
 
 export default function Navbar({
   search,
   setSearch,
   onCreateTaskClick,
+  userName,
 }: NavbarProps) {
+
+  const name = localStorage.getItem("name");
 
   return (
     <nav className="bg-green-100 border border-green-300 rounded-xl px-6 py-4 mb-8">
@@ -23,7 +27,7 @@ export default function Navbar({
         {/* Left Side */}
         <div>
           <h1 className="text-2xl font-bold text-black">
-            Rahul Dashboard
+            {userName}'s Dashboard
           </h1>
         </div>
 

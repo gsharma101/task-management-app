@@ -11,10 +11,14 @@ type Task = {
 
 type TaskGridProps = {
   tasks: Task[];
+  onDelete: (id: number) => void;
+  onEdit: (task: Task) => void;
 };
 
 export default function TaskGrid({
   tasks,
+  onDelete,
+  onEdit,
 }: TaskGridProps) {
 
   if (tasks.length === 0) {
@@ -42,6 +46,8 @@ export default function TaskGrid({
         <TaskCard
           key={task.id}
           task={task}
+          onDelete={onDelete}
+          onEdit={onEdit}
         />
 
       ))}

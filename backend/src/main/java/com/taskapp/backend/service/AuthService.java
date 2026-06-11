@@ -65,4 +65,12 @@ public class AuthService {
                 .message("Login successful")
                 .build();
     }
+
+    public User getCurrentUser(String email) {
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found")
+                );
+    }
 }

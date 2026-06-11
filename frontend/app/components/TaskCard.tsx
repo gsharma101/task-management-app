@@ -1,3 +1,5 @@
+import { Pencil, Trash2 } from "lucide-react";
+
 type Task = {
   id: number;
   title: string;
@@ -9,10 +11,14 @@ type Task = {
 
 type TaskCardProps = {
   task: Task;
+  onEdit: (task: Task) => void;
+  onDelete: (id: number) => void;
 };
 
 export default function TaskCard({
   task,
+  onEdit,
+  onDelete,
 }: TaskCardProps) {
 
   return (
@@ -43,6 +49,34 @@ export default function TaskCard({
         <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
           {task.priority}
         </span>
+
+      </div>
+
+      <div className="flex justify-end gap-3 mt-6">
+
+        <button
+          onClick={() => onEdit(task)}
+          className="text-blue-600 hover:text-blue-800 transition cursor-pointer"
+        >
+          <Pencil size={20} />
+        </button>
+
+        <button
+          onClick={() => {
+
+            const confirmed = window.confirm(
+              "Are you sure you want to delete this task?"
+            );
+
+            if (confirmed) {
+              onDelete(task.id);
+            }
+
+          }}
+          className="text-red-600 hover:text-red-800 transition cursor-pointer"
+        >
+          <Trash2 size={20} />
+        </button>
 
       </div>
 
