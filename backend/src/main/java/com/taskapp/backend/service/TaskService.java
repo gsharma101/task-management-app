@@ -8,16 +8,14 @@ import com.taskapp.backend.exception.ResourceNotFoundException;
 import com.taskapp.backend.repository.TaskRepository;
 import com.taskapp.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import com.taskapp.backend.entity.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -57,10 +55,21 @@ public class TaskService {
 
         User currentUser = getCurrentUser();
 
+        Sort sort;
+
+        if (sortBy.equals("dueDate")) {
+
+            sort = Sort.by(sortBy).ascending();
+
+        } else {
+
+            sort = Sort.by(sortBy).descending();
+        }
+
         Pageable pageable = PageRequest.of(
                 page,
                 size,
-                Sort.by(sortBy).descending()
+                sort
         );
 
         Page<Task> taskPage;
@@ -82,6 +91,25 @@ public class TaskService {
         } else {
 
             taskPage = taskRepository.findByUser(currentUser, pageable);
+        }
+
+        if (sortBy.equals("priority")) {
+
+            List<Task> sortedTasks =
+                    new ArrayList<>(taskPage.getContent());
+
+            sortedTasks.sort((a, b) ->
+                    b.getPriority().ordinal()
+                            - a.getPriority().ordinal()
+            );
+
+            return new PageImpl<>(
+                    sortedTasks.stream()
+                            .map(this::mapToResponseDto)
+                            .toList(),
+                    pageable,
+                    taskPage.getTotalElements()
+            );
         }
 
         return taskPage.map(this::mapToResponseDto);
