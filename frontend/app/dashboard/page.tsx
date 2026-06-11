@@ -33,29 +33,6 @@ export default function DashboardPage() {
   const [editingTask, setEditingTask] =
     useState<Task | null>(null);
 
-  useEffect(() => {
-
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-
-      router.push("/login");
-
-      return;
-    }
-
-    fetchTasks();
-
-    fetchCurrentUser();
-
-  }, [router]);
-
-  useEffect(() => {
-
-    fetchTasks();
-
-  }, [search]);
-
   const fetchCurrentUser = async () => {
 
     try {
@@ -85,6 +62,37 @@ export default function DashboardPage() {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+
+      router.push("/login");
+
+      return;
+    }
+
+    fetchTasks();
+
+    fetchCurrentUser();
+
+  }, [router]);
+
+  useEffect(() => {
+
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    fetchTasks();
+
+  }, [search]);
 
   const handleDeleteTask = async (id: number) => {
 

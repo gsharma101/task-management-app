@@ -17,8 +17,6 @@ export default function Navbar({
   userName,
 }: NavbarProps) {
 
-  const name = localStorage.getItem("name");
-
   return (
     <nav className="bg-green-100 border border-green-300 rounded-xl px-6 py-4 mb-8">
 
