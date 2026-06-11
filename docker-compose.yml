@@ -1,0 +1,42 @@
+services:
+
+  postgres:
+    image: postgres:16
+
+    container_name: taskapp-postgres
+
+    environment:
+      POSTGRES_DB: task_management
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+
+    container_name: taskapp-backend
+
+    ports:
+      - "5454:5454"
+
+    depends_on:
+      - postgres
+
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/task_management
+
+      SPRING_DATASOURCE_USERNAME: postgres
+
+      SPRING_DATASOURCE_PASSWORD: postgres
+
+      JWT_SECRET: your_super_secret_key_for_jwt_authentication_123456
+
+volumes:
+  postgres_data:
