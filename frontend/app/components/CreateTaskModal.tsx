@@ -91,9 +91,9 @@ export default function CreateTaskModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-8">
+      <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-2xl p-8">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-3xl font-bold text-black">
+          <h2 className="text-3xl font-bold border border-gray-300 dark:border-zinc-700 rounded-xl p-4 text-black dark:text-white bg-white dark:bg-zinc-800">
             {editingTask ? "Update Task" : "Create Task"}
           </h2>
 
