@@ -292,6 +292,91 @@ http://localhost:3000
 
 ---
 
+# Docker Setup
+
+The entire application can be started using Docker Compose.
+
+This setup includes:
+
+* Next.js frontend
+* Spring Boot backend
+* PostgreSQL database
+
+---
+
+## Prerequisites
+
+Make sure Docker Desktop is installed and running.
+
+---
+
+## Run Full Application
+
+From the project root directory:
+
+```bash
+docker-compose up --build
+```
+
+This command will:
+
+* build frontend and backend Docker images
+* start PostgreSQL container
+* start Spring Boot backend container
+* start Next.js frontend container
+
+---
+
+## Application URLs
+
+### Frontend
+
+```txt
+http://localhost:3000
+```
+
+### Backend
+
+```txt
+http://localhost:5454
+```
+
+---
+
+## Dockerized Services
+
+### Frontend
+
+* Containerized using Node.js
+* Runs Next.js application
+
+### Backend
+
+* Containerized using Eclipse Temurin Java 21
+* Runs Spring Boot application
+
+### Database
+
+* PostgreSQL 16 container
+* Persistent Docker volume for database storage
+
+---
+
+## Stop Containers
+
+```bash
+docker-compose down
+```
+
+---
+
+## Rebuild Containers
+
+```bash
+docker-compose up --build
+```
+
+
 # Running Tests
 
 ```bash
