@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: postgres
 
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -50,7 +50,7 @@ services:
       - backend
 
     environment:
-      NEXT_PUBLIC_API_URL: http://backend:5454
+      NEXT_PUBLIC_API_URL: http://localhost:5454
 
 volumes:
   postgres_data:
