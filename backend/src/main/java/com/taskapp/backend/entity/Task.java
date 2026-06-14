@@ -34,6 +34,10 @@ public class Task {
 
     private LocalDate dueDate;
 
+    private String attachmentUrl;
+
+    private String attachmentName;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
