@@ -90,11 +90,7 @@ export default function CreateTaskModal({
 
         formData.append("file", selectedFile);
 
-        const uploadResponse = await api.post("/api/files/upload", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        const uploadResponse = await api.post("/api/files/upload", formData);
 
         attachmentUrl = uploadResponse.data;
 
