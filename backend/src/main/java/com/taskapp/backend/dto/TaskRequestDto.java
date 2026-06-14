@@ -28,4 +28,8 @@ public class TaskRequestDto {
 
     @NotNull(message = "Due date is required")
     private LocalDate dueDate;
+
+    private String attachmentUrl;
+
+    private String attachmentName;
 }

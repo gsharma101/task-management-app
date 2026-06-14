@@ -3,6 +3,7 @@ package com.taskapp.backend.service;
 import com.taskapp.backend.dto.TaskRequestDto;
 import com.taskapp.backend.dto.TaskResponseDto;
 import com.taskapp.backend.entity.Task;
+import com.taskapp.backend.entity.User;
 import com.taskapp.backend.enums.TaskStatus;
 import com.taskapp.backend.exception.ResourceNotFoundException;
 import com.taskapp.backend.repository.TaskRepository;
@@ -12,7 +13,6 @@ import org.springframework.data.domain.*;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import com.taskapp.backend.entity.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,6 +24,7 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
+    private final S3Service s3Service;
 
     public TaskResponseDto createTask(TaskRequestDto requestDto) {
 
@@ -35,6 +36,8 @@ public class TaskService {
                 .status(requestDto.getStatus())
                 .priority(requestDto.getPriority())
                 .dueDate(requestDto.getDueDate())
+                .attachmentUrl(requestDto.getAttachmentUrl())
+                .attachmentName(requestDto.getAttachmentName())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .user(currentUser)
@@ -145,6 +148,7 @@ public class TaskService {
             throw new AccessDeniedException("Access denied");
         }
 
+        s3Service.deleteFile(task.getAttachmentUrl());
         taskRepository.delete(task);
     }
 
@@ -166,6 +170,8 @@ public class TaskService {
         task.setStatus(requestDto.getStatus());
         task.setPriority(requestDto.getPriority());
         task.setDueDate(requestDto.getDueDate());
+        task.setAttachmentUrl(requestDto.getAttachmentUrl());
+        task.setAttachmentName(requestDto.getAttachmentName());
         task.setUpdatedAt(LocalDateTime.now());
 
         Task updatedTask = taskRepository.save(task);
@@ -195,6 +201,8 @@ public class TaskService {
                 .status(task.getStatus())
                 .priority(task.getPriority())
                 .dueDate(task.getDueDate())
+                .attachmentUrl(task.getAttachmentUrl())
+                .attachmentName(task.getAttachmentName())
                 .createdAt(task.getCreatedAt())
                 .updatedAt(task.getUpdatedAt())
                 .build();
