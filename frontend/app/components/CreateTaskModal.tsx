@@ -112,7 +112,7 @@ export default function CreateTaskModal({
             {...register("title", {
               required: "Title is required",
             })}
-            className="w-full border border-gray-300 rounded-xl p-4 text-black"
+            className="w-full border border-gray-300 dark:border-zinc-700 rounded-xl p-4 bg-white dark:bg-zinc-800 text-black dark:text-white placeholder:text-gray-500 dark:placeholder:text-white"
           />
 
           {errors.title && (
@@ -124,17 +124,19 @@ export default function CreateTaskModal({
             {...register("description", {
               required: "Description is required",
             })}
-            className="w-full border border-gray-300 rounded-xl p-4 text-black h-32"
+            className="w-full border border-gray-300 dark:border-zinc-700 rounded-xl p-4 bg-white dark:bg-zinc-800 text-black dark:text-white placeholder:text-gray-500 dark:placeholder:text-white h-32"
           />
 
-          {errors.title && (
-            <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
+          {errors.description && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.description.message}
+            </p>
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <select
               {...register("status")}
-              className="border border-gray-300 rounded-xl p-4 text-black"
+              className="border border-gray-300 dark:border-zinc-700 rounded-xl p-4 bg-white dark:bg-zinc-800 text-black dark:text-white"
             >
               <option value="PENDING">PENDING</option>
               <option value="IN_PROGRESS">IN_PROGRESS</option>
@@ -143,7 +145,7 @@ export default function CreateTaskModal({
 
             <select
               {...register("priority")}
-              className="border border-gray-300 rounded-xl p-4 text-black"
+              className="border border-gray-300 dark:border-zinc-700 rounded-xl p-4 bg-white dark:bg-zinc-800 text-black dark:text-white"
             >
               <option value="LOW">LOW</option>
               <option value="MEDIUM">MEDIUM</option>
@@ -153,7 +155,7 @@ export default function CreateTaskModal({
             <input
               type="date"
               {...register("dueDate")}
-              className="border border-gray-300 rounded-xl p-4 text-black"
+              className="border border-gray-300 dark:border-zinc-700 rounded-xl p-4 bg-white dark:bg-zinc-800 text-black dark:text-white dark:[color-scheme:dark]"
             />
           </div>
 
@@ -161,14 +163,14 @@ export default function CreateTaskModal({
             <button
               type="button"
               onClick={onClose}
-              className="border border-gray-400 px-6 py-3 rounded-xl text-black hover:bg-gray-100"
+              className="border border-gray-400 dark:border-zinc-600 px-6 py-3 rounded-xl text-black dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="bg-black text-white px-6 py-3 rounded-xl hover:bg-gray-800"
+              className="bg-black dark:bg-white text-white dark:text-black px-6 py-3 rounded-xl hover:bg-gray-800 dark:hover:bg-gray-200"
             >
               {editingTask ? "Update Task" : "Create Task"}
             </button>
